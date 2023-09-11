@@ -1,35 +1,34 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToMany, BaseEntity, JoinColumn, JoinTable } from "typeorm";
-import { Role } from './Role.js';
-
+import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import bcrypt from 'bcrypt';
+import { Role } from "./Role.js";
 
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column({ length: 50, nullable: false })
-  username: string;
-
-  @Column({ nullable: false })
-  password: string;
+  @Column({ length: 255, nullable: false })
+  userName: string;
 
   @Column({ nullable: false })
   email: string;
 
-  @ManyToMany(() => Role, { cascade: true, eager: true })
-  @JoinTable()
-  roles: Role[];
-
-  async assignRole(role: Role) {
-    this.roles = [...this.roles, role];
-    await this.save();
+  @BeforeInsert()
+  async hashPassword() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10)
+    }
   }
+  @Column({ nullable: false })
+  password: string;
+  
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => "CURRENT_TIMESTAMP()"
+  })
+  createdAt: Date;
 
-  static async findByIdWithRolesAndPermissions(userId: number): Promise<User | null> {
-    return this.createQueryBuilder('user')
-      .leftJoinAndSelect('user.roles', 'roles')
-      .leftJoinAndSelect('roles.permissions', 'permissions')
-      .where('user.id = :userId', { userId })
-      .getOne();
-  }
+  @ManyToOne(() => Role, role => role.users, { cascade: true, eager: true, nullable: true })
+  @JoinColumn()
+  role: Role;
 }

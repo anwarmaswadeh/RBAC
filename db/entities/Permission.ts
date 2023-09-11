@@ -1,17 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, BaseEntity } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, BaseEntity, JoinTable } from 'typeorm';
 import { Role } from './Role.js';
 
 @Entity()
 export class Permission extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('uuid')
   id: number;
-  
-  @Column({
-    type: 'enum',
-    enum: ['create_post', 'edit_user', 'delete_comment', 'view_post']
-  })
-  name: 'create_post' | 'edit_user' | 'delete_comment' | 'view_post';
+
+  @Column({ unique: true })
+  name: string;
 
   @ManyToMany(() => Role, role => role.permissions)
+  @JoinTable()
   roles: Role[];
 }

@@ -1,33 +1,28 @@
-
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEntity } from 'typeorm';
-import { User } from './User.js';
-import { Permission } from './Permission.js';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import { User } from "./User.js";
 
 @Entity()
-export class Role extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+export class Profile extends BaseEntity{
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column({
-    nullable: false,
-    type: 'enum',
-    enum: ['Admin', 'User', 'Editor'],
-    default: 'User'
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column({ type: 'timestamp' })
+  dateOfBirth: Date;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => "CURRENT_TIMESTAMP()"
   })
-  name: "Admin" | "User" | "Editor";
+  createdAt: Date;
 
-  @ManyToMany(() => Permission, { cascade: true, eager: true })
-  @JoinTable()
-  permissions: Permission[];
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
 
-
-  @ManyToMany(() => User, user => user.roles)
-  users: User[];
-
-  async addPermissions(permissions: Permission[]) {
-    this.permissions = [...this.permissions, ...permissions];
-    await this.save();
-  }
-
-  
 }
