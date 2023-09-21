@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEntity, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, BaseEntity, CreateDateColumn} from 'typeorm';
 import { User } from './User.js';
 import { Permission } from './Permission.js';
 
@@ -10,10 +10,16 @@ export class Role extends BaseEntity {
   @Column({ unique: true, nullable: false})
   name: string;
 
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => "CURRENT_TIMESTAMP(6)"
+})
+createdAt: Date;
+
   @ManyToMany(() => Permission, { cascade: true, eager: true })
   @JoinTable()
   permissions: Permission[];
 
-  @OneToMany(() => User, user => user.role)
+  @ManyToMany(() => User, user => user.role)
   users: User[]; 
 }

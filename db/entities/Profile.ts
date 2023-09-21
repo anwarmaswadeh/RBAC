@@ -6,10 +6,10 @@ export class Profile extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
+  @Column({nullable:false, length:255})
   firstName: string;
 
-  @Column()
+  @Column({nullable:false, length:255})
   lastName: string;
 
   @Column({ type: 'timestamp' })
@@ -20,9 +20,5 @@ export class Profile extends BaseEntity{
     default: () => "CURRENT_TIMESTAMP()"
   })
   createdAt: Date;
-
-  @OneToOne(() => User)
-  @JoinColumn()
-  user: User;
 
 }

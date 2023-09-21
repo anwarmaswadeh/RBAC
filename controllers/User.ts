@@ -27,7 +27,7 @@ try {
         },
         process.env.SECRET_KEY || '',
         {
-        expiresIn: "30m"
+        expiresIn: "30w"
         }
     );
 

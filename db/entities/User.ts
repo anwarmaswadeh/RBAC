@@ -1,6 +1,7 @@
-import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import bcrypt from 'bcrypt';
 import { Role } from "./Role.js";
+import { Profile } from "./Profile.js";
 
 @Entity()
 export class User extends BaseEntity {
@@ -24,11 +25,15 @@ export class User extends BaseEntity {
   
   @CreateDateColumn({
     type: 'timestamp',
-    default: () => "CURRENT_TIMESTAMP()"
+    default: () => "CURRENT_TIMESTAMP(6)"
   })
   createdAt: Date;
 
-  @ManyToOne(() => Role, role => role.users, { cascade: true, eager: true, nullable: true })
+  @ManyToMany(() => Role, role => role.users, { cascade: true, onDelete:"CASCADE", onUpdate:"CASCADE"})
   @JoinColumn()
-  role: Role;
+  role: Role[];
+
+  @OneToOne(()=>Profile)
+  @JoinColumn()
+  profile:Profile
 }

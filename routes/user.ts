@@ -8,7 +8,6 @@ import insertRole from "../controllers/role.js";
 import insertPermission from "../controllers/permission.js";
 
 
-
 var router = express.Router();
 
 router.post('/', authorize('POST_users'), validateUser, (req, res, next) => {
