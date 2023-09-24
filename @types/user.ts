@@ -1,10 +1,9 @@
 
 export namespace NSUser {
- 
   export enum Type {
-    admin = 'admin',
-    user = 'user',
-    editor = 'editor',
+    Admin = 'Admin', 
+    User = 'User', 
+    Editor = 'Editor'
   }
 
   export interface Item {
@@ -14,11 +13,8 @@ export namespace NSUser {
     password: string;
     type: Type;
     createdAt: Date;
-    firstName? : string;
-    lastName?: string;
-    dateOfBirth?: Date;
   }
-
+ 
   export interface Role {
     id: number;
     name: "Admin" | "User" | "Editor";

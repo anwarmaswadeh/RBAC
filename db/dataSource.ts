@@ -12,10 +12,10 @@ const dataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [
-    User,
+    Permission,
     Profile,
     Role,
-    Permission
+    User
   ],
   migrations: ['./**/migration/*.ts'],
   synchronize: true,

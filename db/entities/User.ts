@@ -1,39 +1,32 @@
-import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import bcrypt from 'bcrypt';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "./Role.js";
 import { Profile } from "./Profile.js";
 
 @Entity()
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-  @Column({ length: 255, nullable: false })
+  @Column({ length: 50, nullable: false })
   userName: string;
+
+  @Column({ nullable: false })
+  password: string;
 
   @Column({ nullable: false })
   email: string;
 
-  @BeforeInsert()
-  async hashPassword() {
-    if (this.password) {
-      this.password = await bcrypt.hash(this.password, 10)
-    }
-  }
-  @Column({ nullable: false })
-  password: string;
-  
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => "CURRENT_TIMESTAMP(6)"
-  })
-  createdAt: Date;
-
-  @ManyToMany(() => Role, role => role.users, { cascade: true, onDelete:"CASCADE", onUpdate:"CASCADE"})
+  @OneToOne(()=> Profile, { cascade: true, eager: true })
   @JoinColumn()
+  profile: Profile;
+
+  @ManyToMany(() => Role, { cascade: true, onDelete:"CASCADE", onUpdate:"CASCADE"})
+  @JoinTable()
   role: Role[];
 
-  @OneToOne(()=>Profile)
-  @JoinColumn()
-  profile:Profile
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => "CURRENT_TIMESTAMP(0)"
+  })
+  createdAt: Date;
 }

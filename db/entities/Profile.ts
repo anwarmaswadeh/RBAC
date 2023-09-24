@@ -1,24 +1,17 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import { User } from "./User.js";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Profile extends BaseEntity{
-  @PrimaryGeneratedColumn('uuid')
+export class Profile extends BaseEntity {
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({nullable:false, length:255})
+  @Column({ nullable: false })
   firstName: string;
 
-  @Column({nullable:false, length:255})
+  @Column({ nullable: false })
   lastName: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'date', nullable: false })
   dateOfBirth: Date;
-
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => "CURRENT_TIMESTAMP()"
-  })
-  createdAt: Date;
 
 }
